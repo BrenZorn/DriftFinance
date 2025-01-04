@@ -1,4 +1,5 @@
 const express = require('express')
+const router = express.Router()
 const { 
     getAuth, 
     createUserWithEmailAndPassword, 
@@ -6,14 +7,18 @@ const {
     signOut, 
     sendEmailVerification,
     sendPasswordResetEmail
-} = require('./Lib/firebase')
+} = require('../Lib/firebase');
+const { addUser } = require('../Lib/mongo');
 
 const auth = getAuth();
-const app = express()
 
 
-app.post('/register',(req, res) => {
-    const { email, password } = req.body;
+
+
+
+router.post('/register',(req, res) => {
+    console.log('userCredential')
+    const { email, password, username } = req.body;
     if (!email || !password) {
       return res.status(422).json({
         email: "Email is required",
@@ -24,7 +29,8 @@ app.post('/register',(req, res) => {
       .then((userCredential) => {
         sendEmailVerification(auth.currentUser)
           .then(() => {
-            res.status(201).json({ message: "Verification email sent! User created successfully!" });
+            addUser(auth.currentUser.uid, username, email)
+            res.status(201).json({ message: 'Verification email has been sent' });
           })
           .catch((error) => {
             console.error(error);
@@ -36,3 +42,7 @@ app.post('/register',(req, res) => {
         res.status(500).json({ error: errorMessage });
       });
 } )
+
+
+
+module.exports = router
