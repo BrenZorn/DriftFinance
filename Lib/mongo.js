@@ -27,7 +27,7 @@ const addUser = async (id, username, email)=>{
   const userModel = {
     FireBaseID:id,
     UserName: username,
-    Emial: email
+    Email: email
   }
   try{
     await client.connect();
@@ -38,7 +38,14 @@ const addUser = async (id, username, email)=>{
   }
 }
 
+const getUser = async (email)=>{
+  await client.connect()
+  let user = await client.db("DriftFinance").collection("Users").findOne({email: email})
+  return user
+}
+
 module.exports = {
     run,
-    addUser
+    addUser,
+    getUser
 }

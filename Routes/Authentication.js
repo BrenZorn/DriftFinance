@@ -8,7 +8,8 @@ const {
     sendEmailVerification,
     sendPasswordResetEmail
 } = require('../Lib/firebase');
-const { addUser } = require('../Lib/mongo');
+const { addUser, getUser } = require('../Lib/mongo');
+const jwt = require('jsonwebtoken');
 
 const auth = getAuth();
 
@@ -39,16 +40,20 @@ router.post('/register',(req, res) => {
       });
 } )
 
-router.post('/signin', (req, res)=>{
+const JWT_SECRET_KEY = process.env.JWT;
+
+
+router.post('/signin', async (req, res)=>{
   const {email, password} = req.body.data
   console.log(email, password)
   signInWithEmailAndPassword(auth, email, password)
   .then((userCredential) => {
-    // Signed in 
-    const user = userCredential.user;
-    //creat jwt for api auth
-
-    res.send("welcome").status(200)
+    getUser().then((dbUser)=>{
+      const token = jwt.sign({ id: dbUser._id.toString(), email: dbUser.Email }, JWT_SECRET_KEY, { expiresIn: '2h' });
+      res.send({token}).status(200)
+    }).catch((error)=>{
+      res.status(500).json({error: "couldn't find user in DB"})
+    })
   })
   .catch((error) => {
     const errorCode = error.code;
