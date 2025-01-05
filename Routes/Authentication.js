@@ -40,11 +40,14 @@ router.post('/register',(req, res) => {
 } )
 
 router.post('/signin', (req, res)=>{
-  const {email, password} = req.body
+  const {email, password} = req.body.data
+  console.log(email, password)
   signInWithEmailAndPassword(auth, email, password)
   .then((userCredential) => {
     // Signed in 
     const user = userCredential.user;
+    //creat jwt for api auth
+
     res.send("welcome").status(200)
   })
   .catch((error) => {
