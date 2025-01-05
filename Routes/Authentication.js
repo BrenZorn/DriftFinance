@@ -12,10 +12,6 @@ const { addUser } = require('../Lib/mongo');
 
 const auth = getAuth();
 
-
-
-
-
 router.post('/register',(req, res) => {
     console.log('userCredential')
     const { email, password, username } = req.body;
@@ -43,6 +39,29 @@ router.post('/register',(req, res) => {
       });
 } )
 
+router.post('/signin', (req, res)=>{
+  const {email, password} = req.body
+  signInWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
+    // Signed in 
+    const user = userCredential.user;
+    res.send("welcome").status(200)
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    res.status(500).json({error: errorMessage})
+  });
+})
+
+
+router.post('/signout', (req, res)=>{
+  signOut(auth).then(() => {
+    console.log('signed out')
+  }).catch((error) => {
+    // An error happened.
+  });
+})
 
 
 module.exports = router
