@@ -40,8 +40,9 @@ router.post('/register',(req, res) => {
       });
 } )
 
-const JWT_SECRET_KEY = process.env.JWT;
 
+
+const JWT_SECRET_KEY = process.env.JWT;
 
 router.post('/signin', async (req, res)=>{
   const {email, password} = req.body.data
@@ -56,9 +57,11 @@ router.post('/signin', async (req, res)=>{
     })
   })
   .catch((error) => {
+    console.log('erer')
     const errorCode = error.code;
     const errorMessage = error.message;
-    res.status(500).json({error: errorMessage})
+    console.log(errorMessage)
+    res.status(500).json({errorMessage})
   });
 })
 
