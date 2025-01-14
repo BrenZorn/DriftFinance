@@ -51,7 +51,7 @@ router.post('/signin', async (req, res)=>{
   .then((userCredential) => {
     getUser().then((dbUser)=>{
       const token = jwt.sign({ id: dbUser._id.toString(), email: dbUser.Email }, JWT_SECRET_KEY, { expiresIn: '2h' });
-      res.send({token}).status(200)
+      res.send({token, userInfo: {email:dbUser.Email, username:dbUser.UserName}}).status(200)
     }).catch((error)=>{
       res.status(500).json({error: "couldn't find user in DB"})
     })
