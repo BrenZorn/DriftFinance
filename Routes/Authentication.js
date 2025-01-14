@@ -1,5 +1,7 @@
 const express = require('express')
+const jwt = require('jsonwebtoken');
 const router = express.Router()
+
 const { 
     getAuth, 
     createUserWithEmailAndPassword, 
@@ -9,7 +11,7 @@ const {
     sendPasswordResetEmail
 } = require('../Lib/firebase');
 const { addUser, getUser } = require('../Lib/mongo');
-const jwt = require('jsonwebtoken');
+const {authenticateToken} = require('../Middleware/jwtVerification')
 
 const auth = getAuth();
 
@@ -66,7 +68,7 @@ router.post('/signin', async (req, res)=>{
 })
 
 
-router.post('/signout', (req, res)=>{
+router.post('/signout', authenticateToken,(req, res)=>{
   signOut(auth).then(() => {
     console.log('signed out')
   }).catch((error) => {
