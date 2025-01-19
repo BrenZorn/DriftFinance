@@ -9,6 +9,7 @@ router.get('/home', authenticateToken, (req, res)=>{
     res.send('authenticated').status(200)
 })
 
+<<<<<<< HEAD
 router.get('/currentUser', authenticateToken, async (req, res)=>{
     if(req.user){
         try{
@@ -28,6 +29,14 @@ router.get('/currentUser', authenticateToken, async (req, res)=>{
     else{
         res.json({"error":"No user found"}).status(500)
     }
+=======
+router.get('/currentUser', authenticateToken,(req, res)=>{
+     getUser(req.user.email)
+     .then((user)=>{
+        //edit data to only send back what is needed 
+        res.json(user).status(200)
+     })
+>>>>>>> JWT
 })
 
 module.exports = router

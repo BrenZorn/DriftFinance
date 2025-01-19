@@ -4,7 +4,6 @@ const SECRET_KEY = process.env.JWT
 
 const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
-    console.log(req.headers)
     if (!authHeader) {
       return res.status(403).json({ message: 'Token is required' });
     }
