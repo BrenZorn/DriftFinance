@@ -39,10 +39,20 @@ const addUser = async (id, username, email)=>{
 }
 
 const getUser = async (email)=>{
-  await client.connect()
-  let user = await client.db("DriftFinance").collection("Users").findOne({email: email})
-  return user
-}
+  try{
+    await client.connect()
+    let query = {Email: email}
+    let user = await client.db("DriftFinance").collection("Users").findOne(query)
+    if (!user) {
+      console.log("User not found");
+      return null;
+    }
+    return user;
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    throw error; // Optional: re-throw the error
+  }
+};
 
 module.exports = {
     run,
