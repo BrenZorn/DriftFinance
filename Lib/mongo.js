@@ -54,8 +54,32 @@ const getUser = async (email)=>{
   }
 };
 
+const updateIncome = async (income, id)=>{
+  try{
+    await client.connect()
+    let query = {userID: id} 
+    let user = await client.db("DriftFinance").collection("Income").findOne(query)
+    if(!user){
+      let incomeModle = {
+        userID: id,
+        Income: income
+      }
+      console.log('user not found')
+      await client.db("DriftFinance").collection("Income").insertOne(incomeModle)
+      return true
+    }
+    await client.db("DriftFinance").collection("Income").updateOne({userID:id},{$set:{Income: income}})
+    return true
+  }catch(error){
+    console.error("Error updating income:", error);
+    await client.close()
+    return false
+  }
+}
+
 module.exports = {
     run,
     addUser,
-    getUser
+    getUser,
+    updateIncome
 }
